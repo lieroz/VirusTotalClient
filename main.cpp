@@ -1,4 +1,6 @@
 #include "mainwindow.h"
+#include "networkmanager.h"
+
 #include <QApplication>
 
 int main(int argc, char* argv[]) {

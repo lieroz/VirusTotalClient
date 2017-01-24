@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "networkmanager.h"
 
 MainWindow::MainWindow(QWidget* parent) :
 	QMainWindow(parent) {
@@ -16,4 +17,9 @@ void MainWindow::changeEvent(QEvent* e) {
 		default:
 			break;
 	}
+}
+
+void MainWindow::on_pushButton_clicked() {
+	NetworkManager* test = new NetworkManager;
+	test->processRequest();
 }
