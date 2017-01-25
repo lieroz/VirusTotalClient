@@ -1,5 +1,4 @@
 #include "networkmanager.h"
-#include <stdio.h>
 
 void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
 	const QFileInfo file_info(absolute_file_path);
@@ -14,7 +13,7 @@ void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
 	QMimeType mime_message = db.mimeTypeForFile(file_info);
 	file_part.setHeader(QNetworkRequest::ContentTypeHeader, QVariant(mime_message.name()));
 	file_part.setHeader(QNetworkRequest::ContentDispositionHeader,
-					   QVariant("form-data; name=\"file\"; filename=\""+ file_info.baseName() + "\""));
+						QVariant("form-data; name=\"file\"; filename=\"" + file_info.fileName() + "\""));
 
 	QFile* file = new QFile(absolute_file_path);
 	file->open(QIODevice::ReadOnly);
@@ -26,6 +25,36 @@ void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
 
 	QNetworkRequest request(QUrl(api_address + "/file/scan"));
 	network_manager->post(request, multi_part);
+}
+
+void NetworkManager::rescanFileRequest(const QString& resource) {
+	QUrlQuery query_set;
+	query_set.addQueryItem("apikey", api_key);
+	query_set.addQueryItem("resource", resource);
+
+	QUrl post_params;
+	post_params.setQuery(query_set);
+
+	QByteArray post_data = post_params.toEncoded(QUrl::RemoveFragment);
+	post_data.remove(0, 1);
+
+	QNetworkRequest request(QUrl(api_address + "/file/rescan"));
+	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+
+	network_manager->post(request, post_data);
+}
+
+void NetworkManager::retrieveFileScanRequest(const QString& resource) {
+	QUrl url(api_address + "/file/report");
+
+	QUrlQuery query_set;
+	query_set.addQueryItem("apikey", api_key);
+	query_set.addQueryItem("resource", resource);
+
+	url.setQuery(query_set.query());
+	QNetworkRequest request(url);
+
+	network_manager->get(request);
 }
 
 void NetworkManager::scanUrlRequest(const QString& url) {
@@ -43,6 +72,10 @@ void NetworkManager::scanUrlRequest(const QString& url) {
 	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
 	network_manager->post(request, post_data);
+}
+
+void retrieveUrlScanRequest(const QString& resource) {
+
 }
 
 void NetworkManager::requestFinished(QNetworkReply* reply) {

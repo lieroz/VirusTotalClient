@@ -21,10 +21,14 @@ class NetworkManager : public QObject {
 
 		virtual ~NetworkManager() = default;
 
-		void scanUrlRequest(const QString&);
 		void scanFileRequest(const QString&);
+		void rescanFileRequest(const QString&);
+		void retrieveFileScanRequest(const QString&);
+		void scanUrlRequest(const QString&);
+		void retrieveUrlScanRequest(const QString&);
+		void makeComment(const QString&);
 
-	public slots:
+	private slots:
 
 		void requestFinished(QNetworkReply*);
 };
