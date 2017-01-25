@@ -125,6 +125,25 @@ void NetworkManager::retrieveDomainReportRequest(const QString& domain) {
 }
 
 
+void NetworkManager::makeCommentRequest(const QString& resource, const QString& comment) {
+	QUrlQuery query_set;
+	query_set.addQueryItem("apikey", api_key);
+	query_set.addQueryItem("resource", resource);
+	query_set.addQueryItem("comment", comment);
+
+	QUrl post_params;
+	post_params.setQuery(query_set);
+
+	QByteArray post_data = post_params.toEncoded(QUrl::RemoveFragment);
+	post_data.remove(0, 1);
+
+	QNetworkRequest request(QUrl(api_address + "/comments/put"));
+	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+
+	network_manager->post(request, post_data);
+}
+
+
 void NetworkManager::requestFinished(QNetworkReply* reply) {
 	qDebug() << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 

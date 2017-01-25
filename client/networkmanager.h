@@ -28,7 +28,7 @@ class NetworkManager : public QObject {
 		void retrieveUrlReportRequest(const QString&);
 		void retrieveIpReportRequest(const QString&);
 		void retrieveDomainReportRequest(const QString&);
-		void makeCommentRequest(const QString&);
+		void makeCommentRequest(const QString&, const QString&);
 
 	private slots:
 
