@@ -21,5 +21,5 @@ void MainWindow::changeEvent(QEvent* e) {
 
 void MainWindow::on_pushButton_clicked() {
 	NetworkManager* test = new NetworkManager;
-	test->processRequest();
+	test->testFileRequest();
 }

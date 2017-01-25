@@ -6,6 +6,32 @@ NetworkManager::NetworkManager() {
 	connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(requestFinished(QNetworkReply*)));
 }
 
+void NetworkManager::testFileRequest() {
+	QHttpMultiPart* multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+
+	QHttpPart apiKeyPart;
+	apiKeyPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"apikey\""));
+	apiKeyPart.setBody("0c1c7087646c9351505ff1fc652f2de641a389269ddd72c607eeb96eb7e6f204");
+
+	QHttpPart filePart;
+	QMimeDatabase db;
+	QMimeType mime = db.mimeTypeForFile("/home/lieroz/Qt_C++_Projects/VirusTotalClient/client/simple.txt");
+	filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant(mime.name()));
+	filePart.setHeader(QNetworkRequest::ContentDispositionHeader,
+					   QVariant("form-data; name=\"file\"; filename=\"/home/lieroz/Qt_C++_Projects/VirusTotalClient/client/simple.txt\""));
+
+	QFile* file = new QFile("/home/lieroz/Qt_C++_Projects/VirusTotalClient/client/simple.txt");
+	file->open(QIODevice::ReadOnly);
+	filePart.setBodyDevice(file);
+	file->setParent(multiPart);
+
+	multiPart->append(apiKeyPart);
+	multiPart->append(filePart);
+
+	QNetworkRequest request(QUrl("https://www.virustotal.com/vtapi/v2/file/scan"));
+	manager->post(request, multiPart);
+}
+
 void NetworkManager::processRequest() {
 	QNetworkRequest request(QUrl("https://www.virustotal.com/vtapi/v2/url/scan"));
 
@@ -29,6 +55,8 @@ void NetworkManager::processRequest() {
 }
 
 void NetworkManager::requestFinished(QNetworkReply* reply) {
+	qDebug() << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
 	QByteArray raw_data = reply->readAll();
 	QJsonObject json_object = QJsonDocument::fromJson(raw_data).object();
 
