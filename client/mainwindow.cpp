@@ -21,5 +21,6 @@ void MainWindow::changeEvent(QEvent* e) {
 
 void MainWindow::on_pushButton_clicked() {
 	NetworkManager* test = new NetworkManager;
-	test->testFileRequest();
+//	test->scanFileRequest("/home/lieroz/Qt_C++_Projects/VirusTotalClient/client/simple.txt");
+	test->scanUrlRequest("http://www.virustotal.com");
 }

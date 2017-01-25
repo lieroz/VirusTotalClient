@@ -1,57 +1,48 @@
 #include "networkmanager.h"
 #include <stdio.h>
 
-NetworkManager::NetworkManager() {
-	manager = new QNetworkAccessManager(this);
-	connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(requestFinished(QNetworkReply*)));
-}
+void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
+	const QFileInfo file_info(absolute_file_path);
+	QHttpMultiPart* multi_part = new QHttpMultiPart(QHttpMultiPart::FormDataType);
 
-void NetworkManager::testFileRequest() {
-	QHttpMultiPart* multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+	QHttpPart api_key_part;
+	api_key_part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"apikey\""));
+	api_key_part.setBody(api_key);
 
-	QHttpPart apiKeyPart;
-	apiKeyPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"apikey\""));
-	apiKeyPart.setBody("0c1c7087646c9351505ff1fc652f2de641a389269ddd72c607eeb96eb7e6f204");
-
-	QHttpPart filePart;
+	QHttpPart file_part;
 	QMimeDatabase db;
-	QMimeType mime = db.mimeTypeForFile("/home/lieroz/Qt_C++_Projects/VirusTotalClient/client/simple.txt");
-	filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant(mime.name()));
-	filePart.setHeader(QNetworkRequest::ContentDispositionHeader,
-					   QVariant("form-data; name=\"file\"; filename=\"/home/lieroz/Qt_C++_Projects/VirusTotalClient/client/simple.txt\""));
+	QMimeType mime_message = db.mimeTypeForFile(file_info);
+	file_part.setHeader(QNetworkRequest::ContentTypeHeader, QVariant(mime_message.name()));
+	file_part.setHeader(QNetworkRequest::ContentDispositionHeader,
+					   QVariant("form-data; name=\"file\"; filename=\""+ file_info.baseName() + "\""));
 
-	QFile* file = new QFile("/home/lieroz/Qt_C++_Projects/VirusTotalClient/client/simple.txt");
+	QFile* file = new QFile(absolute_file_path);
 	file->open(QIODevice::ReadOnly);
-	filePart.setBodyDevice(file);
-	file->setParent(multiPart);
+	file_part.setBodyDevice(file);
+	file->setParent(multi_part);
 
-	multiPart->append(apiKeyPart);
-	multiPart->append(filePart);
+	multi_part->append(api_key_part);
+	multi_part->append(file_part);
 
-	QNetworkRequest request(QUrl("https://www.virustotal.com/vtapi/v2/file/scan"));
-	manager->post(request, multiPart);
+	QNetworkRequest request(QUrl(api_address + "/file/scan"));
+	network_manager->post(request, multi_part);
 }
 
-void NetworkManager::processRequest() {
-	QNetworkRequest request(QUrl("https://www.virustotal.com/vtapi/v2/url/scan"));
+void NetworkManager::scanUrlRequest(const QString& url) {
+	QUrlQuery query_set;
+	query_set.addQueryItem("apikey", api_key);
+	query_set.addQueryItem("url", url);
 
-	QUrlQuery query;
-	query.addQueryItem("apikey", "0c1c7087646c9351505ff1fc652f2de641a389269ddd72c607eeb96eb7e6f204");
-	query.addQueryItem("url", "http://www.virustotal.com");
+	QUrl post_params;
+	post_params.setQuery(query_set);
 
-	QUrl params;
-	params.setQuery(query);
+	QByteArray post_data = post_params.toEncoded(QUrl::RemoveFragment);
+	post_data.remove(0, 1);
 
-	qDebug() << params;
-
-	QByteArray data = params.toEncoded(QUrl::RemoveFragment);
-	data.remove(0, 1);
-
-	qDebug() << data;
-
+	QNetworkRequest request(QUrl(api_address + "/url/scan"));
 	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
-	manager->post(request, data);
+	network_manager->post(request, post_data);
 }
 
 void NetworkManager::requestFinished(QNetworkReply* reply) {
