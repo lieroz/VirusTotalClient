@@ -1,5 +1,6 @@
 #include "networkmanager.h"
 
+
 void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
 	const QFileInfo file_info(absolute_file_path);
 	QHttpMultiPart* multi_part = new QHttpMultiPart(QHttpMultiPart::FormDataType);
@@ -27,6 +28,7 @@ void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
 	network_manager->post(request, multi_part);
 }
 
+
 void NetworkManager::rescanFileRequest(const QString& resource) {
 	QUrlQuery query_set;
 	query_set.addQueryItem("apikey", api_key);
@@ -44,7 +46,8 @@ void NetworkManager::rescanFileRequest(const QString& resource) {
 	network_manager->post(request, post_data);
 }
 
-void NetworkManager::retrieveFileScanRequest(const QString& resource) {
+
+void NetworkManager::retrieveFileReportRequest(const QString& resource) {
 	QUrl url(api_address + "/file/report");
 
 	QUrlQuery query_set;
@@ -56,6 +59,7 @@ void NetworkManager::retrieveFileScanRequest(const QString& resource) {
 
 	network_manager->get(request);
 }
+
 
 void NetworkManager::scanUrlRequest(const QString& url) {
 	QUrlQuery query_set;
@@ -74,7 +78,8 @@ void NetworkManager::scanUrlRequest(const QString& url) {
 	network_manager->post(request, post_data);
 }
 
-void NetworkManager::retrieveUrlScanRequest(const QString& resource) {
+
+void NetworkManager::retrieveUrlReportRequest(const QString& resource) {
 	QUrlQuery query_set;
 	query_set.addQueryItem("apikey", api_key);
 	query_set.addQueryItem("resource", resource);
@@ -90,6 +95,21 @@ void NetworkManager::retrieveUrlScanRequest(const QString& resource) {
 
 	network_manager->post(request, post_data);
 }
+
+
+void NetworkManager::retrieveIpReportRequest(const QString& ip) {
+	QUrl url(api_address + "/ip-address/report");
+
+	QUrlQuery query_set;
+	query_set.addQueryItem("ip", ip);
+	query_set.addQueryItem("apikey", api_key);
+
+	url.setQuery(query_set.query());
+	QNetworkRequest request(url);
+
+	network_manager->get(request);
+}
+
 
 void NetworkManager::requestFinished(QNetworkReply* reply) {
 	qDebug() << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();

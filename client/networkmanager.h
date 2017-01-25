@@ -23,10 +23,12 @@ class NetworkManager : public QObject {
 
 		void scanFileRequest(const QString&);
 		void rescanFileRequest(const QString&);
-		void retrieveFileScanRequest(const QString&);
+		void retrieveFileReportRequest(const QString&);
 		void scanUrlRequest(const QString&);
-		void retrieveUrlScanRequest(const QString&);
-		void makeComment(const QString&);
+		void retrieveUrlReportRequest(const QString&);
+		void retrieveIpReportRequest(const QString&);
+		void retrieveDomainReportRquest(const QString&);
+		void makeCommentRequest(const QString&);
 
 	private slots:
 
