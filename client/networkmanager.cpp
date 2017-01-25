@@ -101,8 +101,22 @@ void NetworkManager::retrieveIpReportRequest(const QString& ip) {
 	QUrl url(api_address + "/ip-address/report");
 
 	QUrlQuery query_set;
-	query_set.addQueryItem("ip", ip);
 	query_set.addQueryItem("apikey", api_key);
+	query_set.addQueryItem("ip", ip);
+
+	url.setQuery(query_set.query());
+	QNetworkRequest request(url);
+
+	network_manager->get(request);
+}
+
+
+void NetworkManager::retrieveDomainReportRequest(const QString& domain) {
+	QUrl url(api_address + "/domain/report");
+
+	QUrlQuery query_set;
+	query_set.addQueryItem("apikey", api_key);
+	query_set.addQueryItem("domain", domain);
 
 	url.setQuery(query_set.query());
 	QNetworkRequest request(url);

@@ -26,5 +26,6 @@ void MainWindow::on_pushButton_clicked() {
 //	test->rescanFileRequest("0f272f560805b42285bb0cd73f8048453be9d0dfdee8b6d573619881dd29a18d");
 //	test->retrieveFileScanRequest("0f272f560805b42285bb0cd73f8048453be9d0dfdee8b6d573619881dd29a18d");
 //	test->retrieveUrlScanRequest("http://www.virustotal.com");
-	test->retrieveIpReportRequest("74.125.224.72");
+//	test->retrieveIpReportRequest("74.125.224.72");
+//	test->retrieveDomainReportRequest("ya.ru");
 }
