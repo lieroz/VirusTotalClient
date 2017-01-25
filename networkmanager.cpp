@@ -29,6 +29,15 @@ void NetworkManager::processRequest() {
 }
 
 void NetworkManager::requestFinished(QNetworkReply* reply) {
-	qDebug() << reply->readAll();
-	qDebug() << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+	QByteArray raw_data = reply->readAll();
+	QJsonObject json_object = QJsonDocument::fromJson(raw_data).object();
+
+	qDebug() << json_object;
+	qDebug() << json_object["scan_id"];
+
+	QList<QByteArray> header_list = reply->rawHeaderList();
+
+	for (auto header : header_list) {
+		qDebug() << header << ":" << reply->rawHeader(header);
+	}
 }

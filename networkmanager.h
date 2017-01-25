@@ -17,6 +17,7 @@ class NetworkManager : public QObject {
 		virtual ~NetworkManager() = default;
 
 		void processRequest();
+		void testRequest();
 
 	public slots:
 
