@@ -14,7 +14,7 @@ typedef enum {
 class ItemDoesNotExistException : public std::exception {
 	public:
 
-		virtual const char* what() const throw() {
+		virtual const char* what() const noexcept() {
 			return "Item you searched for was not present in VirusTotal's dataset.";
 		}
 };
@@ -23,7 +23,7 @@ class ItemDoesNotExistException : public std::exception {
 class RequestStillInQueueException : public std::exception {
 	public:
 
-		virtual const char* what() const throw() {
+		virtual const char* what() const noexcept() {
 			return "Requested item is still queued for analysis.";
 		}
 };
