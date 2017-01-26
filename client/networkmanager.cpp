@@ -147,34 +147,39 @@ void NetworkManager::makeCommentRequest(const QString& resource, const QString& 
 
 
 void NetworkManager::requestFinished(QNetworkReply* reply) {
-	http_status_code_t server_reply{static_cast<http_status_code_t>(
-										reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt())};
+	try {
+		http_status_code_t server_reply{static_cast<http_status_code_t>(
+											reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt())};
 
-	if (server_reply == OK) {
-		QJsonObject json_object{QJsonDocument::fromJson(reply->readAll()).object()};
-		response_code_t response_code{static_cast<response_code_t>(json_object["response_code"].toInt())};
-		std::string verbose_message{json_object["verbose_message"].toString().toStdString()};
+		if (server_reply == OK) {
+			QJsonObject json_object{QJsonDocument::fromJson(reply->readAll()).object()};
+			response_code_t response_code{static_cast<response_code_t>(json_object["response_code"].toInt())};
+			std::string verbose_msg{json_object["verbose_msg"].toString().toStdString()};
 
-		if (response_code == ITEM_IS_PRESENT) {
-			qDebug() << json_object;
+			if (response_code == ITEM_IS_PRESENT) {
+				qDebug() << json_object;
 
-		} else if (response_code == ITEM_IS_STILL_IN_QUEUE) {
-			throw RequestStillInQueueException(verbose_message);
+			} else if (response_code == ITEM_IS_STILL_IN_QUEUE) {
+				throw RequestStillInQueueException(verbose_msg);
 
-		} else if (response_code == ITEM_DOES_NOT_EXIST) {
-			throw ItemDoesNotExistException(verbose_message);
+			} else if (response_code == ITEM_DOES_NOT_EXIST) {
+				throw ItemDoesNotExistException(verbose_msg);
+
+			} else {
+				throw UnknownResponseCodeException();
+			}
+
+		} else if (server_reply == API_REQUEST_LIMIT_EXCEEDED) {
+			throw PublicAPIRequestRateExceededException();
+
+		} else if (server_reply == FORBIDDEN) {
+			throw ForbiddenException();
 
 		} else {
-			throw UnknownResponseCodeException();
+			throw UnknownHttpStatusCodeException();
 		}
 
-	} else if (server_reply == API_REQUEST_LIMIT_EXCEEDED) {
-		throw PublicAPIRequestRateExceededException();
-
-	} else if (server_reply == FORBIDDEN) {
-		throw ForbiddenException();
-
-	} else {
-		throw UnknownHttpStatusCodeException();
+	} catch (std::exception& ex) {
+		qDebug() << ex.what();
 	}
 }
