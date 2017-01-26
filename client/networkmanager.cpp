@@ -1,22 +1,24 @@
 #include "networkmanager.h"
+#include "responses.h"
+#include "status_codes.h"
 
 
 void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
-	const QFileInfo file_info(absolute_file_path);
-	QHttpMultiPart* multi_part = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+	const QFileInfo file_info{absolute_file_path};
+	QHttpMultiPart* multi_part{new QHttpMultiPart(QHttpMultiPart::FormDataType)};
 
-	QHttpPart api_key_part;
+	QHttpPart api_key_part{};
 	api_key_part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"apikey\""));
 	api_key_part.setBody(api_key);
 
-	QHttpPart file_part;
-	QMimeDatabase db;
-	QMimeType mime_message = db.mimeTypeForFile(file_info);
+	QHttpPart file_part{};
+	QMimeDatabase db{};
+	QMimeType mime_message{db.mimeTypeForFile(file_info)};
 	file_part.setHeader(QNetworkRequest::ContentTypeHeader, QVariant(mime_message.name()));
 	file_part.setHeader(QNetworkRequest::ContentDispositionHeader,
 						QVariant("form-data; name=\"file\"; filename=\"" + file_info.fileName() + "\""));
 
-	QFile* file = new QFile(absolute_file_path);
+	QFile* file{new QFile(absolute_file_path)};
 	file->open(QIODevice::ReadOnly);
 	file_part.setBodyDevice(file);
 	file->setParent(multi_part);
@@ -24,23 +26,23 @@ void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
 	multi_part->append(api_key_part);
 	multi_part->append(file_part);
 
-	QNetworkRequest request(QUrl(api_address + "/file/scan"));
+	QNetworkRequest request{QUrl{api_address + "/file/scan"}};
 	network_manager->post(request, multi_part);
 }
 
 
 void NetworkManager::rescanFileRequest(const QString& resource) {
-	QUrlQuery query_set;
+	QUrlQuery query_set{};
 	query_set.addQueryItem("apikey", api_key);
 	query_set.addQueryItem("resource", resource);
 
-	QUrl post_params;
+	QUrl post_params{};
 	post_params.setQuery(query_set);
 
-	QByteArray post_data = post_params.toEncoded(QUrl::RemoveFragment);
+	QByteArray post_data{post_params.toEncoded(QUrl::RemoveFragment)};
 	post_data.remove(0, 1);
 
-	QNetworkRequest request(QUrl(api_address + "/file/rescan"));
+	QNetworkRequest request{QUrl{api_address + "/file/rescan"}};
 	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
 	network_manager->post(request, post_data);
@@ -48,31 +50,31 @@ void NetworkManager::rescanFileRequest(const QString& resource) {
 
 
 void NetworkManager::retrieveFileReportRequest(const QString& resource) {
-	QUrl url(api_address + "/file/report");
+	QUrl url{api_address + "/file/report"};
 
-	QUrlQuery query_set;
+	QUrlQuery query_set{};
 	query_set.addQueryItem("apikey", api_key);
 	query_set.addQueryItem("resource", resource);
 
 	url.setQuery(query_set.query());
-	QNetworkRequest request(url);
+	QNetworkRequest request{url};
 
 	network_manager->get(request);
 }
 
 
 void NetworkManager::scanUrlRequest(const QString& url) {
-	QUrlQuery query_set;
+	QUrlQuery query_set{};
 	query_set.addQueryItem("apikey", api_key);
 	query_set.addQueryItem("url", url);
 
-	QUrl post_params;
+	QUrl post_params{};
 	post_params.setQuery(query_set);
 
-	QByteArray post_data = post_params.toEncoded(QUrl::RemoveFragment);
+	QByteArray post_data{post_params.toEncoded(QUrl::RemoveFragment)};
 	post_data.remove(0, 1);
 
-	QNetworkRequest request(QUrl(api_address + "/url/scan"));
+	QNetworkRequest request{QUrl{api_address + "/url/scan"}};
 	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
 	network_manager->post(request, post_data);
@@ -80,17 +82,17 @@ void NetworkManager::scanUrlRequest(const QString& url) {
 
 
 void NetworkManager::retrieveUrlReportRequest(const QString& resource) {
-	QUrlQuery query_set;
+	QUrlQuery query_set{};
 	query_set.addQueryItem("apikey", api_key);
 	query_set.addQueryItem("resource", resource);
 
-	QUrl post_params;
+	QUrl post_params{};
 	post_params.setQuery(query_set);
 
-	QByteArray post_data = post_params.toEncoded(QUrl::RemoveFragment);
+	QByteArray post_data{post_params.toEncoded(QUrl::RemoveFragment)};
 	post_data.remove(0, 1);
 
-	QNetworkRequest request(QUrl(api_address + "/url/report"));
+	QNetworkRequest request{QUrl{api_address + "/url/report"}};
 	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
 	network_manager->post(request, post_data);
@@ -98,46 +100,46 @@ void NetworkManager::retrieveUrlReportRequest(const QString& resource) {
 
 
 void NetworkManager::retrieveIpReportRequest(const QString& ip) {
-	QUrl url(api_address + "/ip-address/report");
+	QUrl url{api_address + "/ip-address/report"};
 
-	QUrlQuery query_set;
+	QUrlQuery query_set{};
 	query_set.addQueryItem("apikey", api_key);
 	query_set.addQueryItem("ip", ip);
 
 	url.setQuery(query_set.query());
-	QNetworkRequest request(url);
+	QNetworkRequest request{url};
 
 	network_manager->get(request);
 }
 
 
 void NetworkManager::retrieveDomainReportRequest(const QString& domain) {
-	QUrl url(api_address + "/domain/report");
+	QUrl url{api_address + "/domain/report"};
 
-	QUrlQuery query_set;
+	QUrlQuery query_set{};
 	query_set.addQueryItem("apikey", api_key);
 	query_set.addQueryItem("domain", domain);
 
 	url.setQuery(query_set.query());
-	QNetworkRequest request(url);
+	QNetworkRequest request{url};
 
 	network_manager->get(request);
 }
 
 
 void NetworkManager::makeCommentRequest(const QString& resource, const QString& comment) {
-	QUrlQuery query_set;
+	QUrlQuery query_set{};
 	query_set.addQueryItem("apikey", api_key);
 	query_set.addQueryItem("resource", resource);
 	query_set.addQueryItem("comment", comment);
 
-	QUrl post_params;
+	QUrl post_params{};
 	post_params.setQuery(query_set);
 
-	QByteArray post_data = post_params.toEncoded(QUrl::RemoveFragment);
+	QByteArray post_data{post_params.toEncoded(QUrl::RemoveFragment)};
 	post_data.remove(0, 1);
 
-	QNetworkRequest request(QUrl(api_address + "/comments/put"));
+	QNetworkRequest request{QUrl{api_address + "/comments/put"}};
 	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
 	network_manager->post(request, post_data);
@@ -145,17 +147,34 @@ void NetworkManager::makeCommentRequest(const QString& resource, const QString& 
 
 
 void NetworkManager::requestFinished(QNetworkReply* reply) {
-	qDebug() << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+	http_status_code_t server_reply{static_cast<http_status_code_t>(
+										reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt())};
 
-	QByteArray raw_data = reply->readAll();
-	QJsonObject json_object = QJsonDocument::fromJson(raw_data).object();
+	if (server_reply == OK) {
+		QJsonObject json_object{QJsonDocument::fromJson(reply->readAll()).object()};
+		response_code_t response_code{static_cast<response_code_t>(json_object["response_code"].toInt())};
+		std::string verbose_message{json_object["verbose_message"].toString().toStdString()};
 
-	qDebug() << json_object;
-	qDebug() << json_object["scan_id"];
+		if (response_code == ITEM_IS_PRESENT) {
+			qDebug() << json_object;
 
-	QList<QByteArray> header_list = reply->rawHeaderList();
+		} else if (response_code == ITEM_IS_STILL_IN_QUEUE) {
+			throw RequestStillInQueueException(verbose_message);
 
-	for (auto header : header_list) {
-		qDebug() << header << ":" << reply->rawHeader(header);
+		} else if (response_code == ITEM_DOES_NOT_EXIST) {
+			throw ItemDoesNotExistException(verbose_message);
+
+		} else {
+			throw UnknownResponseCodeException();
+		}
+
+	} else if (server_reply == API_REQUEST_LIMIT_EXCEEDED) {
+		throw PublicAPIRequestRateExceededException();
+
+	} else if (server_reply == FORBIDDEN) {
+		throw ForbiddenException();
+
+	} else {
+		throw UnknownHttpStatusCodeException();
 	}
 }

@@ -2,6 +2,7 @@
 #define EXCEPTIONS_H
 
 #include <exception>
+#include <string>
 
 
 typedef enum {
@@ -11,20 +12,58 @@ typedef enum {
 } response_code_t;
 
 
-class ItemDoesNotExistException : public std::exception {
+class ResponseException : public std::exception {
+	protected:
+
+		std::string _message{};
+
 	public:
 
-		virtual const char* what() const noexcept() {
-			return "Item you searched for was not present in VirusTotal's dataset.";
+		explicit ResponseException(const char* message) :
+			_message{message} {}
+
+		explicit ResponseException(const std::string& message) :
+			_message{message} {}
+
+		virtual ~ResponseException() {}
+};
+
+
+class RequestStillInQueueException : public ResponseException {
+	public:
+
+		explicit RequestStillInQueueException(const char* message) :
+			ResponseException{message} {}
+
+		explicit RequestStillInQueueException(const std::string& message) :
+			ResponseException{message} {}
+
+		virtual const char* what() const noexcept {
+			return _message.c_str();
 		}
 };
 
 
-class RequestStillInQueueException : public std::exception {
+class ItemDoesNotExistException : public ResponseException {
 	public:
 
-		virtual const char* what() const noexcept() {
-			return "Requested item is still queued for analysis.";
+		explicit ItemDoesNotExistException(const char* message) :
+			ResponseException{message} {}
+
+		explicit ItemDoesNotExistException(const std::string& message) :
+			ResponseException{message} {}
+
+		virtual const char* what() const noexcept {
+			return _message.c_str();
+		}
+};
+
+
+class UnknownResponseCodeException : public std::exception {
+	public:
+
+		virtual const char* what() const noexcept {
+			return "Unknown response code. Please contact the administration for more information.";
 		}
 };
 

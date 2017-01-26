@@ -2,7 +2,7 @@
 #include "networkmanager.h"
 
 MainWindow::MainWindow(QWidget* parent) :
-	QMainWindow(parent) {
+	QMainWindow{parent} {
 	ui.setupUi(this);
 }
 
@@ -22,7 +22,7 @@ void MainWindow::changeEvent(QEvent* e) {
 
 
 void MainWindow::on_pushButton_clicked() {
-	NetworkManager* test = new NetworkManager;
+	NetworkManager* test{new NetworkManager};
 //	test->scanFileRequest("/home/lieroz/Qt_C++_Projects/VirusTotalClient/client/test.txt");
 //	test->scanUrlRequest("http://www.virustotal.com");
 //	test->rescanFileRequest("0f272f560805b42285bb0cd73f8048453be9d0dfdee8b6d573619881dd29a18d");

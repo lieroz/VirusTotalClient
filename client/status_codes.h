@@ -14,7 +14,7 @@ typedef enum {
 class PublicAPIRequestRateExceededException : public std::exception {
 	public:
 
-		virtual const char* what() const noexcept() {
+		virtual const char* what() const noexcept {
 			return "Exceeded the public API request rate limit.";
 		}
 };
@@ -23,8 +23,17 @@ class PublicAPIRequestRateExceededException : public std::exception {
 class ForbiddenException : public std::exception {
 	public:
 
-		virtual const char* what() const noexcept() {
+		virtual const char* what() const noexcept {
 			return "Attempt to perform calls to functions without having the required privileges.";
+		}
+};
+
+
+class UnknownHttpStatusCodeException : public std::exception {
+	public:
+
+		virtual const char* what() const noexcept {
+			return "Unknown HTTP status code. Please contact the administration for more information.";
 		}
 };
 
