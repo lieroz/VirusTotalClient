@@ -3,6 +3,7 @@
 
 #include <QtNetwork>
 
+
 class NetworkManager : public QObject {
 
 		Q_OBJECT
@@ -24,8 +25,10 @@ class NetworkManager : public QObject {
 		void scanFileRequest(const QString&);
 		void rescanFileRequest(const QString&);
 		void retrieveFileReportRequest(const QString&);
+
 		void scanUrlRequest(const QString&);
 		void retrieveUrlReportRequest(const QString&);
+
 		void retrieveIpReportRequest(const QString&);
 		void retrieveDomainReportRequest(const QString&);
 		void makeCommentRequest(const QString&, const QString&);
@@ -34,5 +37,6 @@ class NetworkManager : public QObject {
 
 		void requestFinished(QNetworkReply*);
 };
+
 
 #endif // NETWORKMANAGER_H

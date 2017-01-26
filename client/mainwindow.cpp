@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget* parent) :
 	ui.setupUi(this);
 }
 
+
 void MainWindow::changeEvent(QEvent* e) {
 	QMainWindow::changeEvent(e);
 
@@ -18,6 +19,7 @@ void MainWindow::changeEvent(QEvent* e) {
 			break;
 	}
 }
+
 
 void MainWindow::on_pushButton_clicked() {
 	NetworkManager* test = new NetworkManager;

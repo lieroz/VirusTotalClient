@@ -3,6 +3,7 @@
 
 #include "ui_mainwindow.h"
 
+
 class MainWindow : public QMainWindow {
 
 		Q_OBJECT
@@ -24,5 +25,6 @@ class MainWindow : public QMainWindow {
 
 		Ui::MainWindow ui;
 };
+
 
 #endif // MAINWINDOW_H

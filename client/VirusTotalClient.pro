@@ -17,6 +17,8 @@ SOURCES += main.cpp\
     networkmanager.cpp
 
 HEADERS  += mainwindow.h \
-    networkmanager.h
+    networkmanager.h \
+    responses.h \
+    status_codes.h
 
 FORMS    += mainwindow.ui
