@@ -19,7 +19,13 @@ class MainWindow : public QMainWindow {
 
 	private slots:
 
-		void on_pushButton_clicked();
+		void on_scanButton_clicked();
+
+		void on_fileRadioButton_clicked();
+		void on_urlRadioButton_clicked();
+		void on_searchRadioButton_clicked();
+
+		void on_uploadButton_clicked();
 
 	private:
 

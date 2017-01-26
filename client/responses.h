@@ -25,7 +25,7 @@ class ResponseException : public std::exception {
 		explicit ResponseException(const std::string& message) :
 			_message{message} {}
 
-		virtual ~ResponseException() {}
+		virtual ~ResponseException() = default;
 };
 
 
