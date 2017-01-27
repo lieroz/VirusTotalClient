@@ -32,7 +32,7 @@ void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
 
 	} catch (std::exception& ex) {
 		QMessageBox message_box{QMessageBox::Warning, "Warning", QObject::tr(ex.what()),
-					QMessageBox::NoButton, 0, Qt::FramelessWindowHint};
+								QMessageBox::NoButton, 0, Qt::FramelessWindowHint};
 
 		message_box.exec();
 	}
@@ -82,7 +82,7 @@ void NetworkManager::retrieveFileReportRequest(const QString& resource) {
 
 void NetworkManager::scanUrlRequest(const QString& url) {
 	QUrlQuery query_set{};
-	//	query_set.addQueryItem("apikey", api_key);
+	query_set.addQueryItem("apikey", api_key);
 	query_set.addQueryItem("url", url);
 
 	QUrl post_params{};
@@ -198,7 +198,7 @@ void NetworkManager::requestFinished(QNetworkReply* reply) {
 
 	} catch (std::exception& ex) {
 		QMessageBox message_box{QMessageBox::Warning, "Warning", QObject::tr(ex.what()),
-					QMessageBox::NoButton, 0, Qt::FramelessWindowHint};
+								QMessageBox::NoButton, 0, Qt::FramelessWindowHint};
 
 		message_box.exec();
 	}
