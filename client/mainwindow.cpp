@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 #include "networkmanager.h"
 #include "filebrowser.h"
+#include "program_exceptions.h"
 
 #include <QFileDialog>
+#include <QMessageBox>
 #include <regex>
 
 
@@ -17,7 +19,9 @@ MainWindow::MainWindow(QWidget* parent) :
 	ui.stringFormater->setFixedSize(500, 30);
 	ui.uploadButton->setFixedHeight(30);
 
-	ui.scanButton->setFixedSize(100, 50);
+	ui.scanButton->setFixedSize(120, 50);
+	ui.rescanButton->setFixedSize(120, 50);
+	ui.commentButton->setFixedSize(120, 50);
 }
 
 
@@ -39,36 +43,47 @@ void MainWindow::on_scanButton_clicked() {
 	NetworkManager* network_manager{new NetworkManager};
 	QString input_string = ui.stringFormater->text();
 
-	if (ui.fileRadioButton->isChecked()) {
+	try {
 
-		if (std::regex_match(input_string.toStdString(), std::regex("^(.*/)([^/]*)$"))) {
-			network_manager->scanFileRequest(input_string);
+		if (ui.fileRadioButton->isChecked()) {
 
-		} else {
-			qDebug() << "DOESN'T MATCH!!!";
+			if (std::regex_match(input_string.toStdString(), std::regex("^(.*/)([^/]*)$"))) {
+
+				network_manager->scanFileRequest(input_string);
+
+			} else {
+				throw InvalidFilePathException();
+			}
+
+		} else if (ui.urlRadioButton->isChecked()) {
+
+			if (std::regex_match(input_string.toStdString(),
+								 std::regex("^(ht{2}ps?:\\/{2})?(w{3}\\.)?([^:\\/\\.\\s]+)\\.([^:\\/\\.\\s]+)$"))) {
+				network_manager->scanUrlRequest(input_string);
+
+			} else {
+				throw InvalidUrlNameException();
+			}
+
+		} else if (ui.searchRadioButton->isChecked()) {
+
+			if (!std::regex_match(input_string.toStdString(), std::regex("([^:\\/\\.\\s]+)\\.([^:\\/\\.\\s]+)$"))) {
+
+				if (!std::regex_match(input_string.toStdString(), std::regex("^(([0-9]{1,3})\\.){3}([0-9]{1,3})$"))) {
+					throw InvalidIpAddressException();
+				} else {
+					network_manager->retrieveIpReportRequest(input_string);
+				}
+
+				throw InvalidDomainNameException();
+			} else {
+				network_manager->retrieveDomainReportRequest(input_string);
+			}
 		}
 
-	} else if (ui.urlRadioButton->isChecked()) {
-
-		if (std::regex_match(input_string.toStdString(),
-							 std::regex("^(ht{2}ps?:\\/{2})?(w{3}\\.)?([^:\\/\\.\\s]+)\\.([^:\\/\\.\\s]+)$"))) {
-			network_manager->scanUrlRequest(input_string);
-
-		} else {
-			qDebug() << "DOESN'T MATCH!!!";
-		}
-
-	} else if (ui.searchRadioButton->isChecked()) {
-
-		if (std::regex_match(input_string.toStdString(), std::regex("([^:\\/\\.\\s]+)\\.([^:\\/\\.\\s]+)$"))) {
-			network_manager->retrieveDomainReportRequest(input_string);
-
-		} else if (std::regex_match(input_string.toStdString(), std::regex("^(([0-9]{1,3})\\.){3}([0-9]{1,3})$"))) {
-			network_manager->retrieveIpReportRequest(input_string);
-
-		} else {
-			qDebug() << "DOESN'T MATCH!!!";
-		}
+	} catch (std::exception& ex) {
+		QString exception_message{ex.what()};
+		QMessageBox::warning(this, "Warning", exception_message);
 	}
 
 	ui.stringFormater->clear();
@@ -82,20 +97,20 @@ void MainWindow::on_scanButton_clicked() {
 
 void MainWindow::on_fileRadioButton_clicked() {
 	ui.uploadButton->setText("Choose File");
+	ui.scanButton->setText("Scan it!");
 	ui.stringFormater->clear();
-	ui.rescanButton->setVisible(true);
 }
 
 void MainWindow::on_urlRadioButton_clicked() {
 	ui.uploadButton->setText("Enter URL");
+	ui.scanButton->setText("Scan it!");
 	ui.stringFormater->clear();
-	ui.rescanButton->setVisible(false);
 }
 
 void MainWindow::on_searchRadioButton_clicked() {
 	ui.uploadButton->setText("Enter Term");
+	ui.scanButton->setText("Search it!");
 	ui.stringFormater->clear();
-	ui.rescanButton->setVisible(false);
 }
 
 

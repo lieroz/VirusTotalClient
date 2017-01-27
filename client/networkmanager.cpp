@@ -3,6 +3,9 @@
 #include "status_codes.h"
 #include "program_exceptions.h"
 
+#include <QMessageBox>
+#include <QMainWindow>
+
 
 void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
 	const QFileInfo file_info{absolute_file_path};
@@ -28,7 +31,10 @@ void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
 		}
 
 	} catch (std::exception& ex) {
-		qDebug() << ex.what();
+		QMessageBox message_box{QMessageBox::Warning, "Warning", QObject::tr(ex.what()),
+					QMessageBox::NoButton, 0, Qt::FramelessWindowHint};
+
+		message_box.exec();
 	}
 
 	file_part.setBodyDevice(file);
@@ -76,7 +82,7 @@ void NetworkManager::retrieveFileReportRequest(const QString& resource) {
 
 void NetworkManager::scanUrlRequest(const QString& url) {
 	QUrlQuery query_set{};
-	query_set.addQueryItem("apikey", api_key);
+	//	query_set.addQueryItem("apikey", api_key);
 	query_set.addQueryItem("url", url);
 
 	QUrl post_params{};
@@ -191,6 +197,9 @@ void NetworkManager::requestFinished(QNetworkReply* reply) {
 		}
 
 	} catch (std::exception& ex) {
-		qDebug() << ex.what();
+		QMessageBox message_box{QMessageBox::Warning, "Warning", QObject::tr(ex.what()),
+					QMessageBox::NoButton, 0, Qt::FramelessWindowHint};
+
+		message_box.exec();
 	}
 }
