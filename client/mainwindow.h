@@ -8,6 +8,10 @@ class MainWindow : public QMainWindow {
 
 		Q_OBJECT
 
+	private:
+
+		Ui::MainWindow ui;
+
 	public:
 
 		explicit MainWindow(QWidget* parent = 0);
@@ -26,10 +30,6 @@ class MainWindow : public QMainWindow {
 		void on_searchRadioButton_clicked();
 
 		void on_uploadButton_clicked();
-
-	private:
-
-		Ui::MainWindow ui;
 };
 
 
