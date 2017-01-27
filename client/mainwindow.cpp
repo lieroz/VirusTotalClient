@@ -1,5 +1,8 @@
 #include "mainwindow.h"
 #include "networkmanager.h"
+#include "filebrowser.h"
+
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget* parent) :
 	QMainWindow{parent} {
@@ -25,7 +28,8 @@ void MainWindow::on_scanButton_clicked() {
 	NetworkManager* network_manager{new NetworkManager};
 
 	if (ui.fileRadioButton->isChecked()) {
-		network_manager->scanFileRequest("/home/lieroz/Qt_C++_Projects/VirusTotalClient/client/test.txt");
+		QString file_path = ui.stringFormater->text();
+		network_manager->scanFileRequest(file_path);
 
 	} else if (ui.urlRadioButton->isChecked()) {
 		network_manager->scanUrlRequest("http://www.virustotal.com");
@@ -56,5 +60,6 @@ void MainWindow::on_searchRadioButton_clicked() {
 
 
 void MainWindow::on_uploadButton_clicked() {
-
+	FileBrowser* file_browser{new FileBrowser(this)};
+	file_browser->show();
 }
