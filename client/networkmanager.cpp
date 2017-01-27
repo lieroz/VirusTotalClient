@@ -4,7 +4,6 @@
 #include "program_exceptions.h"
 
 #include <QMessageBox>
-#include <QMainWindow>
 
 
 void NetworkManager::scanFileRequest(const QString& absolute_file_path) {

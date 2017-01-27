@@ -30,6 +30,7 @@ class MainWindow : public QMainWindow {
 		void on_searchRadioButton_clicked();
 
 		void on_uploadButton_clicked();
+		void on_rescanButton_clicked();
 };
 
 
