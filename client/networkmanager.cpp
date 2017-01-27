@@ -1,6 +1,7 @@
 #include "networkmanager.h"
 #include "responses.h"
 #include "status_codes.h"
+#include "program_exceptions.h"
 
 
 void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
@@ -19,7 +20,17 @@ void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
 						QVariant("form-data; name=\"file\"; filename=\"" + file_info.fileName() + "\""));
 
 	QFile* file{new QFile(absolute_file_path)};
-	file->open(QIODevice::ReadOnly);
+
+	try {
+
+		if (!file->open(QIODevice::ReadOnly)) {
+			throw FileDoesNotExistException();
+		}
+
+	} catch (std::exception& ex) {
+		qDebug() << ex.what();
+	}
+
 	file_part.setBodyDevice(file);
 	file->setParent(multi_part);
 

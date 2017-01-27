@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "networkmanager.h"
 
 #include <QApplication>
 #include <QDesktopWidget>
