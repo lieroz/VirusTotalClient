@@ -54,6 +54,10 @@ class ItemDoesNotExistException : public ResponseException {
 			ResponseException{message} {}
 
 		virtual const char* what() const noexcept {
+			if (_message.empty()) {
+				return "Invalid sha256 key.";
+			}
+
 			return _message.c_str();
 		}
 };

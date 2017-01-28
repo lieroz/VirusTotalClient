@@ -7,7 +7,7 @@ CommentDialog::CommentDialog(QWidget* parent) :
 	ui.setupUi(this);
 
 	this->setWindowTitle("CommentDialog");
-	ui.lineEdit->setPlaceholderText("Enter comment sha256...");
+	ui.lineEdit->setPlaceholderText("Enter file/url/domain/ip sha256...");
 	ui.textEdit->setPlaceholderText("Enter comment message here...");
 }
 

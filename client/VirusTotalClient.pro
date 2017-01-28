@@ -16,7 +16,8 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     networkmanager.cpp \
     filebrowser.cpp \
-    commentdialog.cpp
+    commentdialog.cpp \
+    rescanfiledialog.cpp
 
 HEADERS  += mainwindow.h \
     networkmanager.h \
@@ -24,8 +25,10 @@ HEADERS  += mainwindow.h \
     status_codes.h \
     program_exceptions.h \
     filebrowser.h \
-    commentdialog.h
+    commentdialog.h \
+    rescanfiledialog.h
 
 FORMS    += mainwindow.ui \
     filebrowser.ui \
-    commentdialog.ui
+    commentdialog.ui \
+    rescanfiledialog.ui

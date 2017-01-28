@@ -150,7 +150,7 @@
       <item>
        <widget class="QPushButton" name="commentButton">
         <property name="text">
-         <string>Make Comment</string>
+         <string>Post Comment</string>
         </property>
        </widget>
       </item>
@@ -170,12 +170,6 @@
      </layout>
     </item>
    </layout>
-   <zorder>layoutWidget</zorder>
-   <zorder>scanButton</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>stringFormater</zorder>
-   <zorder>rescanButton</zorder>
-   <zorder>commentButton</zorder>
    <zorder></zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>

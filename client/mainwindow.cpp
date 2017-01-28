@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "networkmanager.h"
 #include "commentdialog.h"
+#include "rescanfiledialog.h"
 #include "filebrowser.h"
 #include "program_exceptions.h"
 
@@ -132,9 +133,11 @@ void MainWindow::on_uploadButton_clicked() {
 
 void MainWindow::on_rescanButton_clicked() {
 	if (ui.fileRadioButton->isChecked()) {
-
+		RescanFileDialog* rescan_file_doalog{new RescanFileDialog(this)};
+		rescan_file_doalog->exec();
 	}
 }
+
 
 void MainWindow::on_commentButton_clicked() {
 	CommentDialog* comment_dialog{new CommentDialog(this)};
