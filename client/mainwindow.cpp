@@ -92,7 +92,6 @@ void MainWindow::on_scanButton_clicked() {
 
 	ui.stringFormater->clear();
 
-	//	test->rescanFileRequest("0f272f560805b42285bb0cd73f8048453be9d0dfdee8b6d573619881dd29a18d");
 	//	test->retrieveFileScanRequest("0f272f560805b42285bb0cd73f8048453be9d0dfdee8b6d573619881dd29a18d");
 	//	test->retrieveUrlScanRequest("http://www.virustotal.com");
 }
@@ -132,10 +131,8 @@ void MainWindow::on_uploadButton_clicked() {
 
 
 void MainWindow::on_rescanButton_clicked() {
-	if (ui.fileRadioButton->isChecked()) {
-		RescanFileDialog* rescan_file_doalog{new RescanFileDialog(this)};
-		rescan_file_doalog->exec();
-	}
+	RescanFileDialog* rescan_file_doalog{new RescanFileDialog(this)};
+	rescan_file_doalog->exec();
 }
 
 
