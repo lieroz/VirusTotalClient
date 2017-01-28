@@ -31,6 +31,7 @@ class MainWindow : public QMainWindow {
 
 		void on_uploadButton_clicked();
 		void on_rescanButton_clicked();
+		void on_commentButton_clicked();
 };
 
 

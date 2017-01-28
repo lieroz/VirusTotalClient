@@ -15,14 +15,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     networkmanager.cpp \
-    filebrowser.cpp
+    filebrowser.cpp \
+    commentdialog.cpp
 
 HEADERS  += mainwindow.h \
     networkmanager.h \
     responses.h \
     status_codes.h \
     program_exceptions.h \
-    filebrowser.h
+    filebrowser.h \
+    commentdialog.h
 
 FORMS    += mainwindow.ui \
-    filebrowser.ui
+    filebrowser.ui \
+    commentdialog.ui

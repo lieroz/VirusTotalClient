@@ -1,9 +1,9 @@
 #include "mainwindow.h"
 #include "networkmanager.h"
+#include "commentdialog.h"
 #include "filebrowser.h"
 #include "program_exceptions.h"
 
-#include <QFileDialog>
 #include <QMessageBox>
 #include <regex>
 
@@ -94,7 +94,6 @@ void MainWindow::on_scanButton_clicked() {
 	//	test->rescanFileRequest("0f272f560805b42285bb0cd73f8048453be9d0dfdee8b6d573619881dd29a18d");
 	//	test->retrieveFileScanRequest("0f272f560805b42285bb0cd73f8048453be9d0dfdee8b6d573619881dd29a18d");
 	//	test->retrieveUrlScanRequest("http://www.virustotal.com");
-	//	test->makeCommentRequest("0f272f560805b42285bb0cd73f8048453be9d0dfdee8b6d573619881dd29a18d", "This is a test comment");
 }
 
 
@@ -132,7 +131,12 @@ void MainWindow::on_uploadButton_clicked() {
 
 
 void MainWindow::on_rescanButton_clicked() {
-//	if (ui.fileRadioButton->isChecked()) {
+	if (ui.fileRadioButton->isChecked()) {
 
-//	}
+	}
+}
+
+void MainWindow::on_commentButton_clicked() {
+	CommentDialog* comment_dialog{new CommentDialog(this)};
+	comment_dialog->exec();
 }

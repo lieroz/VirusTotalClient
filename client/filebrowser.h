@@ -27,7 +27,7 @@ class FileBrowser : public QDialog {
 			return absolute_file_path;
 		}
 
-		void setFilePath(const QString& path) {
+		void setFilePath(const QString& path) const {
 			absolute_file_path = path;
 		}
 
