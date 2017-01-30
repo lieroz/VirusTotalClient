@@ -2,6 +2,8 @@
 #include "responses.h"
 #include "status_codes.h"
 #include "program_exceptions.h"
+#include "scanstatisticswindow.h"
+#include "scanstatisticsdialog.h"
 
 #include <QMessageBox>
 
@@ -177,19 +179,13 @@ void NetworkManager::requestFinished(QNetworkReply* reply) {
 
 				if (verbose_msg == "Scan finished, information embedded") {
 
-					auto antiviruses = json_object["scans"].toObject().keys();
-					auto values = json_object["scans"].toObject();
+//					ScanStatisticswindow* scan_statistics{new ScanStatisticswindow};
+//					scan_statistics->fillWindow(json_object);
+					ScanStatisticsDialog* scan_statistics{new ScanStatisticsDialog};
+					scan_statistics->fillWithData(json_object);
+					scan_statistics->exec();
 
-					for (auto antivirus : antiviruses) {
-						qDebug() << antivirus;
-
-						auto keys = values.value(antivirus).toObject().keys();
-
-						for (auto key : keys) {
-							qDebug() << key << " : " << values.value(antivirus).toObject().value(key);
-						}
-					}
-
+//					delete scan_statistics;
 					return;
 				}
 
