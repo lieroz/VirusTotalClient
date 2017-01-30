@@ -15,13 +15,17 @@ class NetworkManager : public QObject {
 		QByteArray api_key{"0c1c7087646c9351505ff1fc652f2de641a389269ddd72c607eeb96eb7e6f204"};
 		QNetworkAccessManager* network_manager{new QNetworkAccessManager(this)};
 
+		std::string request_type{};
+
 	public:
 
 		explicit NetworkManager() {
 			connect(network_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(requestFinished(QNetworkReply*)));
 		}
 
-		virtual ~NetworkManager() = default;
+		virtual ~NetworkManager() {
+			delete network_manager;
+		}
 
 		void scanFileRequest(const QString&);
 		void rescanFileRequest(const QString&);

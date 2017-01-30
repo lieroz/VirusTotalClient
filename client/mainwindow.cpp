@@ -54,7 +54,6 @@ void MainWindow::on_scanButton_clicked() {
 			if (std::regex_match(input_string.toStdString(), std::regex("^(.*/)([^/]*)$"))) {
 
 				network_manager->scanFileRequest(input_string);
-				setDisabled(this);
 
 			} else {
 				throw InvalidFilePathException();
@@ -94,7 +93,6 @@ void MainWindow::on_scanButton_clicked() {
 	}
 
 	ui.stringFormater->clear();
-	setEnabled(this);
 }
 
 

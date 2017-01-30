@@ -8,6 +8,7 @@
 
 
 void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
+	request_type = "file";
 	const QFileInfo file_info{absolute_file_path};
 	QHttpMultiPart* multi_part{new QHttpMultiPart(QHttpMultiPart::FormDataType)};
 
@@ -81,6 +82,7 @@ void NetworkManager::retrieveFileReportRequest(const QString& resource) {
 
 
 void NetworkManager::scanUrlRequest(const QString& url) {
+	request_type = "url";
 	QUrlQuery query_set{};
 	query_set.addQueryItem("apikey", api_key);
 	query_set.addQueryItem("url", url);
@@ -176,24 +178,39 @@ void NetworkManager::requestFinished(QNetworkReply* reply) {
 			if (response_code == ITEM_IS_PRESENT) {
 				qDebug() << json_object;
 
-				if (verbose_msg == "Scan finished, information embedded") {
+				if (verbose_msg == "Scan finished, information embedded" ||
+					verbose_msg == "Scan finished, scan information embedded in this object") {
 					ScanStatisticsDialog* scan_statistics{new ScanStatisticsDialog};
 					scan_statistics->fillWithData(json_object);
 					scan_statistics->exec();
 
-//					delete scan_statistics;
+					delete scan_statistics;
 					return;
 				}
 
-				QTimer::singleShot(15000, this, [=]{
-					retrieveFileReportRequest(json_object["resource"].toString());
-				});
+				if (request_type == "file") {
+					QTimer::singleShot(15000, this, [=] {
+						retrieveFileReportRequest(json_object["resource"].toString());
+					});
+
+				} else if (request_type == "url") {
+					QTimer::singleShot(15000, this, [=] {
+						retrieveUrlReportRequest(json_object["resource"].toString());
+					});
+				}
 
 			} else {
-				qDebug() << json_object;
-				QTimer::singleShot(15000, this, [=]{
-					retrieveFileReportRequest(json_object["resource"].toString());
-				});
+
+				if (request_type == "file") {
+					QTimer::singleShot(15000, this, [=] {
+						retrieveFileReportRequest(json_object["resource"].toString());
+					});
+
+				} else if (request_type == "url") {
+					QTimer::singleShot(15000, this, [=] {
+						retrieveUrlReportRequest(json_object["resource"].toString());
+					});
+				}
 			}
 
 		} else if (server_reply == API_REQUEST_LIMIT_EXCEEDED) {
