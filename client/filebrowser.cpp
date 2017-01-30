@@ -20,8 +20,6 @@ FileBrowser::FileBrowser(QWidget* parent) :
 	ui.fileBrowserView->setModel(file_model);
 
 	ui.splitter->setSizes({850, 350});
-
-	this->setWindowTitle("FileBrowser");
 }
 
 

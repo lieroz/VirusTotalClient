@@ -18,11 +18,18 @@ OverlayWidget::OverlayWidget(QWidget* parent) :
 	label->setAlignment(Qt::AlignAbsolute);
 	label->move(parent_widget->rect().center() - QPoint{50, 50});
 
-	QMovie* movie{new QMovie("/home/lieroz/Downloads/test.gif")};
-	movie->setParent(this);
+	movie = new QMovie{"/home/lieroz/Downloads/test.gif"};
+	movie->setParent(label);
 	label->setMovie(movie);
 	label->show();
 	movie->start();
+}
+
+
+OverlayWidget::~OverlayWidget() {
+	movie->stop();
+	delete movie;
+	delete label;
 }
 
 

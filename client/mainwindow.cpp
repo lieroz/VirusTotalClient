@@ -4,7 +4,6 @@
 #include "rescanfiledialog.h"
 #include "filebrowser.h"
 #include "program_exceptions.h"
-#include "overlaywidget.h"
 
 #include <QMessageBox>
 #include <regex>

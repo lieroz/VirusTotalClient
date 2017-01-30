@@ -12,11 +12,13 @@ class OverlayWidget : public QWidget {
 	private:
 
 		QLabel* label;
+		QMovie* movie;
 		QWidget* parent_widget;
 
 	public:
 
 		explicit OverlayWidget(QWidget* parent = 0);
+		virtual ~OverlayWidget();
 
 	protected:
 

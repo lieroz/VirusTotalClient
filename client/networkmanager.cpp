@@ -3,8 +3,10 @@
 #include "status_codes.h"
 #include "program_exceptions.h"
 #include "scanstatisticsdialog.h"
+#include "mainwindow.h"
 
 #include <QMessageBox>
+#include <QApplication>
 
 
 void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
@@ -23,7 +25,7 @@ void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
 	file_part.setHeader(QNetworkRequest::ContentDispositionHeader,
 						QVariant("form-data; name=\"file\"; filename=\"" + file_info.fileName() + "\""));
 
-	QFile* file{new QFile(absolute_file_path)};
+	QFile* file{new QFile{absolute_file_path}};
 
 	try {
 
@@ -171,20 +173,37 @@ void NetworkManager::requestFinished(QNetworkReply* reply) {
 											reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt())};
 
 		if (server_reply == OK) {
+			MainWindow* main_window{static_cast<MainWindow*>(QApplication::activeWindow())};
+			main_window->setDisabled(true);
+
+			if (!is_active) {
+				is_active = true;
+				overlay_widget = new OverlayWidget{main_window};
+			}
+
 			QJsonObject json_object = QJsonDocument::fromJson(reply->readAll()).object();
 			response_code_t response_code{static_cast<response_code_t>(json_object["response_code"].toInt())};
 			std::string verbose_msg{json_object["verbose_msg"].toString().toStdString()};
 
+			if (verbose_msg == "Scan request successfully queued, come back later for the report") {
+				QMessageBox message_box{QMessageBox::Information, "Information", QObject::tr(verbose_msg.c_str()),
+										QMessageBox::NoButton, 0, Qt::FramelessWindowHint};
+				message_box.exec();
+			}
+
 			if (response_code == ITEM_IS_PRESENT) {
-				qDebug() << json_object;
 
 				if (verbose_msg == "Scan finished, information embedded" ||
 					verbose_msg == "Scan finished, scan information embedded in this object") {
-					ScanStatisticsDialog* scan_statistics{new ScanStatisticsDialog};
-					scan_statistics->fillWithData(json_object);
+					main_window->setEnabled(true);
+
+					overlay_widget->setParent(0);
+					delete overlay_widget;
+
+					ScanStatisticsDialog* scan_statistics{new ScanStatisticsDialog{main_window}};
+					scan_statistics->fillTableWithData(json_object);
 					scan_statistics->exec();
 
-					delete scan_statistics;
 					return;
 				}
 

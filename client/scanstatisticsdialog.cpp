@@ -3,11 +3,15 @@
 #include <QStandardItemModel>
 #include <QJsonObject>
 #include <QDebug>
+#include <QResizeEvent>
 
 
 ScanStatisticsDialog::ScanStatisticsDialog(QWidget* parent) :
 	QDialog(parent) {
 	ui.setupUi(this);
+
+	ui.listView->setFixedHeight(150);
+	ui.tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 
@@ -26,7 +30,16 @@ void ScanStatisticsDialog::changeEvent(QEvent* e) {
 }
 
 
-void ScanStatisticsDialog::fillWithData(const QJsonObject& json_object) {
+void ScanStatisticsDialog::fillListWithData(const QJsonObject& json_object) {
+	QStandardItemModel* model{new QStandardItemModel{this}};
+
+	model->setColumnCount(2);
+
+
+}
+
+
+void ScanStatisticsDialog::fillTableWithData(const QJsonObject& json_object) {
 	QStandardItemModel* model{new QStandardItemModel{this}};
 
 	model->setColumnCount(4);
@@ -44,7 +57,9 @@ void ScanStatisticsDialog::fillWithData(const QJsonObject& json_object) {
 		size_t columns_amount{};
 
 		model->insertRow(rows_amount);
-		model->setItem(rows_amount, columns_amount++, new QStandardItem{QString{i_key}});
+		QStandardItem* item{new QStandardItem{QString{i_key}}};
+		item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+		model->setItem(rows_amount, columns_amount++, item);
 
 		auto j_keys = i_values.value(i_key).toObject().keys();
 		auto j_values = i_values.value(i_key).toObject();
@@ -69,7 +84,9 @@ void ScanStatisticsDialog::fillWithData(const QJsonObject& json_object) {
 				item_value = j_values.value(j_key).toString();
 			}
 
-			model->setItem(rows_amount, columns_amount++, new QStandardItem{QString{item_value}});
+			item = new QStandardItem{QString{item_value}};
+			item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+			model->setItem(rows_amount, columns_amount++, item);
 		}
 
 		++rows_amount;

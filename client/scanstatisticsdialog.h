@@ -17,7 +17,8 @@ class ScanStatisticsDialog : public QDialog {
 		explicit ScanStatisticsDialog(QWidget* parent = 0);
 		virtual ~ScanStatisticsDialog() = default;
 
-		void fillWithData(const QJsonObject&);
+		void fillTableWithData(const QJsonObject&);
+		void fillListWithData(const QJsonObject&);
 
 	protected:
 

@@ -7,15 +7,21 @@
     <x>0</x>
     <y>0</y>
     <width>860</width>
-    <height>370</height>
+    <height>414</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>ScanStatisticsDialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTableView" name="tableView"/>
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <widget class="QListView" name="listView"/>
+     <widget class="QTableView" name="tableView"/>
+    </widget>
    </item>
   </layout>
  </widget>

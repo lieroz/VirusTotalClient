@@ -1,6 +1,8 @@
 #ifndef NETWORKMANAGER_H
 #define NETWORKMANAGER_H
 
+#include "overlaywidget.h"
+
 #include <QtNetwork>
 #include <QDialog>
 
@@ -16,6 +18,8 @@ class NetworkManager : public QObject {
 		QNetworkAccessManager* network_manager{new QNetworkAccessManager(this)};
 
 		std::string request_type{};
+		OverlayWidget* overlay_widget{};
+		bool is_active{false};
 
 	public:
 
