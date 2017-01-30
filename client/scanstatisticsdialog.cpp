@@ -76,4 +76,8 @@ void ScanStatisticsDialog::fillWithData(const QJsonObject& json_object) {
 	}
 
 	ui.tableView->setModel(model);
+
+	for (int i{}; i < 4; ++i) {
+		ui.tableView->setColumnWidth(i, 200);
+	}
 }

@@ -2,7 +2,6 @@
 #include "responses.h"
 #include "status_codes.h"
 #include "program_exceptions.h"
-#include "scanstatisticswindow.h"
 #include "scanstatisticsdialog.h"
 
 #include <QMessageBox>
@@ -178,9 +177,6 @@ void NetworkManager::requestFinished(QNetworkReply* reply) {
 				qDebug() << json_object;
 
 				if (verbose_msg == "Scan finished, information embedded") {
-
-//					ScanStatisticswindow* scan_statistics{new ScanStatisticswindow};
-//					scan_statistics->fillWindow(json_object);
 					ScanStatisticsDialog* scan_statistics{new ScanStatisticsDialog};
 					scan_statistics->fillWithData(json_object);
 					scan_statistics->exec();
