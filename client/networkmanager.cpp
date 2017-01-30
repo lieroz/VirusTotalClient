@@ -4,8 +4,6 @@
 #include "program_exceptions.h"
 
 #include <QMessageBox>
-#include <thread>
-#include <chrono>
 
 
 void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
@@ -178,17 +176,32 @@ void NetworkManager::requestFinished(QNetworkReply* reply) {
 				qDebug() << json_object;
 
 				if (verbose_msg == "Scan finished, information embedded") {
-					qDebug() << json_object["scans"].toObject();
+
+					auto antiviruses = json_object["scans"].toObject().keys();
+					auto values = json_object["scans"].toObject();
+
+					for (auto antivirus : antiviruses) {
+						qDebug() << antivirus;
+
+						auto keys = values.value(antivirus).toObject().keys();
+
+						for (auto key : keys) {
+							qDebug() << key << " : " << values.value(antivirus).toObject().value(key);
+						}
+					}
+
 					return;
 				}
 
-				retrieveFileReportRequest(json_object["resource"].toString());
-				std::this_thread::sleep_for(std::chrono::seconds(15));
+				QTimer::singleShot(15000, this, [=]{
+					retrieveFileReportRequest(json_object["resource"].toString());
+				});
 
 			} else {
 				qDebug() << json_object;
-				retrieveFileReportRequest(json_object["resource"].toString());
-				std::this_thread::sleep_for(std::chrono::seconds(15));
+				QTimer::singleShot(15000, this, [=]{
+					retrieveFileReportRequest(json_object["resource"].toString());
+				});
 			}
 
 		} else if (server_reply == API_REQUEST_LIMIT_EXCEEDED) {
