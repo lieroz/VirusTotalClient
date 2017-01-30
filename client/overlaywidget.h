@@ -22,7 +22,6 @@ class OverlayWidget : public QWidget {
 
 		bool eventFilter(QObject*, QEvent*) override;
 		bool event(QEvent*) override;
-		void paintEvent(QPaintEvent*) override;
 
 	private:
 

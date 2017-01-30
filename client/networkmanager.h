@@ -2,6 +2,7 @@
 #define NETWORKMANAGER_H
 
 #include <QtNetwork>
+#include <QDialog>
 
 
 class NetworkManager : public QObject {

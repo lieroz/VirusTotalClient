@@ -4,6 +4,7 @@
 #include "rescanfiledialog.h"
 #include "filebrowser.h"
 #include "program_exceptions.h"
+#include "overlaywidget.h"
 
 #include <QMessageBox>
 #include <regex>
@@ -31,6 +32,7 @@ void MainWindow::changeEvent(QEvent* e) {
 	QMainWindow::changeEvent(e);
 
 	switch (e->type()) {
+
 		case QEvent::LanguageChange:
 			ui.retranslateUi(this);
 			break;
@@ -52,6 +54,7 @@ void MainWindow::on_scanButton_clicked() {
 			if (std::regex_match(input_string.toStdString(), std::regex("^(.*/)([^/]*)$"))) {
 
 				network_manager->scanFileRequest(input_string);
+				setDisabled(this);
 
 			} else {
 				throw InvalidFilePathException();
@@ -91,9 +94,7 @@ void MainWindow::on_scanButton_clicked() {
 	}
 
 	ui.stringFormater->clear();
-
-	//	test->retrieveFileScanRequest("0f272f560805b42285bb0cd73f8048453be9d0dfdee8b6d573619881dd29a18d");
-	//	test->retrieveUrlScanRequest("http://www.virustotal.com");
+	setEnabled(this);
 }
 
 

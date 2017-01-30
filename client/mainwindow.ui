@@ -172,7 +172,6 @@
    </layout>
    <zorder></zorder>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNew_Window">
    <property name="text">
     <string>New Window</string>

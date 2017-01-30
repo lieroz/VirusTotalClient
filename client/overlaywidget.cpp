@@ -16,6 +16,7 @@ OverlayWidget::OverlayWidget(QWidget* parent) :
 	label = new QLabel;
 	label->setParent(parent);
 	label->setAlignment(Qt::AlignAbsolute);
+	label->move(parent_widget->rect().center() - QPoint{50, 50});
 
 	QMovie* movie{new QMovie("/home/lieroz/Downloads/test.gif")};
 	movie->setParent(this);
@@ -31,7 +32,6 @@ bool OverlayWidget::eventFilter(QObject* object, QEvent* event) {
 		if (event->type() == QEvent::Resize) {
 			QResizeEvent* resize_event{static_cast<QResizeEvent*>(event)};
 			this->resize(resize_event->size());
-			label->move(parent_widget->rect().center());
 			label->move(parent_widget->rect().center() - QPoint{50, 50});
 
 		} else if (event->type() == QEvent::ChildAdded) {
@@ -55,12 +55,6 @@ bool OverlayWidget::event(QEvent* event) {
 	}
 
 	return QWidget::event(event);
-}
-
-
-void OverlayWidget::paintEvent(QPaintEvent*) {
-	QPainter painter{this};
-	painter.fillRect(rect(), QColor{100, 100, 100, 128});
 }
 
 

@@ -3,6 +3,8 @@
 
 #include "ui_mainwindow.h"
 
+#include <QTimer>
+
 
 class MainWindow : public QMainWindow {
 
@@ -10,7 +12,7 @@ class MainWindow : public QMainWindow {
 
 	private:
 
-		Ui::MainWindow ui;
+		Ui::MainWindow ui{};
 
 	public:
 

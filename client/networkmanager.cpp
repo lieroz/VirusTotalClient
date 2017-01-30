@@ -4,6 +4,8 @@
 #include "program_exceptions.h"
 
 #include <QMessageBox>
+#include <thread>
+#include <chrono>
 
 
 void NetworkManager::scanFileRequest(const QString& absolute_file_path) {
@@ -168,21 +170,25 @@ void NetworkManager::requestFinished(QNetworkReply* reply) {
 											reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt())};
 
 		if (server_reply == OK) {
-			QJsonObject json_object{QJsonDocument::fromJson(reply->readAll()).object()};
+			QJsonObject json_object = QJsonDocument::fromJson(reply->readAll()).object();
 			response_code_t response_code{static_cast<response_code_t>(json_object["response_code"].toInt())};
 			std::string verbose_msg{json_object["verbose_msg"].toString().toStdString()};
 
 			if (response_code == ITEM_IS_PRESENT) {
 				qDebug() << json_object;
 
-			} else if (response_code == ITEM_IS_STILL_IN_QUEUE) {
-				throw RequestStillInQueueException(verbose_msg);
+				if (verbose_msg == "Scan finished, information embedded") {
+					qDebug() << json_object["scans"].toObject();
+					return;
+				}
 
-			} else if (response_code == ITEM_DOES_NOT_EXIST) {
-				throw ItemDoesNotExistException(verbose_msg);
+				retrieveFileReportRequest(json_object["resource"].toString());
+				std::this_thread::sleep_for(std::chrono::seconds(15));
 
 			} else {
-				throw UnknownResponseCodeException();
+				qDebug() << json_object;
+				retrieveFileReportRequest(json_object["resource"].toString());
+				std::this_thread::sleep_for(std::chrono::seconds(15));
 			}
 
 		} else if (server_reply == API_REQUEST_LIMIT_EXCEEDED) {
