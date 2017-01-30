@@ -18,7 +18,7 @@ OverlayWidget::OverlayWidget(QWidget* parent) :
 	label->setAlignment(Qt::AlignAbsolute);
 	label->move(parent_widget->rect().center() - QPoint{50, 50});
 
-	movie = new QMovie{"/home/lieroz/Downloads/test.gif"};
+	movie = new QMovie{":/MyFiles/Files/test.gif"};
 	movie->setParent(label);
 	label->setMovie(movie);
 	label->show();

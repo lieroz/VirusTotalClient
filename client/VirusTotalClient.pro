@@ -37,3 +37,6 @@ FORMS    += mainwindow.ui \
     commentdialog.ui \
     rescanfiledialog.ui \
     scanstatisticsdialog.ui
+
+RESOURCES += \
+    myresources.qrc
