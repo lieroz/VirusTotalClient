@@ -1,12 +1,19 @@
 #ifndef SCANSTATISTICSWINDOW_H
 #define SCANSTATISTICSWINDOW_H
 
-#include <QtCore/qglobal.h>
+#include <QPlainTextEdit>
+#include <QJsonObject>
 
-class ScanStatisticswindow
-{
+class ScanStatisticswindow : public QPlainTextEdit {
+
+		Q_OBJECT
+
 	public:
-		ScanStatisticswindow();
+
+		explicit ScanStatisticswindow();
+		virtual ~ScanStatisticswindow() = default;
+
+		void fillWindow(const QJsonObject&);
 };
 
 #endif // SCANSTATISTICSWINDOW_H
