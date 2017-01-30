@@ -3,7 +3,6 @@
 #include "status_codes.h"
 #include "program_exceptions.h"
 #include "scanstatisticsdialog.h"
-#include "mainwindow.h"
 
 #include <QMessageBox>
 #include <QApplication>
@@ -173,19 +172,20 @@ void NetworkManager::requestFinished(QNetworkReply* reply) {
 											reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt())};
 
 		if (server_reply == OK) {
-			MainWindow* main_window{static_cast<MainWindow*>(QApplication::activeWindow())};
-			main_window->setDisabled(true);
-
-			if (!is_active) {
-				is_active = true;
-				overlay_widget = new OverlayWidget{main_window};
-			}
 
 			QJsonObject json_object = QJsonDocument::fromJson(reply->readAll()).object();
 			response_code_t response_code{static_cast<response_code_t>(json_object["response_code"].toInt())};
 			std::string verbose_msg{json_object["verbose_msg"].toString().toStdString()};
 
 			if (verbose_msg == "Scan request successfully queued, come back later for the report") {
+
+				if (!is_active) {
+					is_active = true;
+					main_window = static_cast<MainWindow*>(QApplication::activeWindow());
+					main_window->setDisabled(true);
+					overlay_widget = new OverlayWidget{main_window};
+				}
+
 				QMessageBox message_box{QMessageBox::Information, "Information", QObject::tr(verbose_msg.c_str()),
 										QMessageBox::NoButton, 0, Qt::FramelessWindowHint};
 				message_box.exec();
@@ -195,14 +195,15 @@ void NetworkManager::requestFinished(QNetworkReply* reply) {
 
 				if (verbose_msg == "Scan finished, information embedded" ||
 					verbose_msg == "Scan finished, scan information embedded in this object") {
-					main_window->setEnabled(true);
-
 					overlay_widget->setParent(0);
 					delete overlay_widget;
 
-					ScanStatisticsDialog* scan_statistics{new ScanStatisticsDialog{main_window}};
+					ScanStatisticsDialog* scan_statistics{new ScanStatisticsDialog};
+					scan_statistics->fillListWithData(json_object);
 					scan_statistics->fillTableWithData(json_object);
 					scan_statistics->exec();
+
+					main_window->setEnabled(true);
 
 					return;
 				}
@@ -217,6 +218,14 @@ void NetworkManager::requestFinished(QNetworkReply* reply) {
 						retrieveUrlReportRequest(json_object["resource"].toString());
 					});
 				}
+
+			} else if (response_code == 0 && json_object["verbose_msg"].toInt() == 0) {
+
+				if (json_object["verbose_msg"].toString().toStdString().empty()) {
+					verbose_msg = "Item doesn't exist";
+				}
+
+				throw ItemDoesNotExistException(verbose_msg);
 
 			} else {
 

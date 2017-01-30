@@ -2,6 +2,7 @@
 #define NETWORKMANAGER_H
 
 #include "overlaywidget.h"
+#include "mainwindow.h"
 
 #include <QtNetwork>
 #include <QDialog>
@@ -19,6 +20,7 @@ class NetworkManager : public QObject {
 
 		std::string request_type{};
 		OverlayWidget* overlay_widget{};
+		MainWindow* main_window{};
 		bool is_active{false};
 
 	public:

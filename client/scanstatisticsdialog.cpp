@@ -10,7 +10,8 @@ ScanStatisticsDialog::ScanStatisticsDialog(QWidget* parent) :
 	QDialog(parent) {
 	ui.setupUi(this);
 
-	ui.listView->setFixedHeight(150);
+	ui.headerView->setFixedHeight(150);
+	ui.headerView->horizontalHeader()->setStretchLastSection(true);
 	ui.tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
@@ -31,11 +32,47 @@ void ScanStatisticsDialog::changeEvent(QEvent* e) {
 
 
 void ScanStatisticsDialog::fillListWithData(const QJsonObject& json_object) {
-	QStandardItemModel* model{new QStandardItemModel{this}};
+	QStandardItemModel* model{new QStandardItemModel{4, 2, this}};
 
-	model->setColumnCount(2);
+	model->setHorizontalHeaderItem(0, new QStandardItem{QString{"Object"}});
+	model->setHorizontalHeaderItem(1, new QStandardItem{QString{"Content"}});
 
+	QStandardItem* item{};
 
+	item = new QStandardItem{QString{"MD5"}};
+	item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+	model->setItem(0, 0, item);
+
+	item = new QStandardItem{QString{json_object["md5"].toString()}};
+	item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+	model->setItem(0, 1, item);
+
+	item = new QStandardItem{QString{"SHA256"}};
+	item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+	model->setItem(1, 0, item);
+
+	item = new QStandardItem{QString{json_object["sha256"].toString()}};
+	item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+	model->setItem(1, 1, item);
+
+	item = new QStandardItem{QString{"Analysis date"}};
+	item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+	model->setItem(2, 0, item);
+
+	item = new QStandardItem{QString{json_object["scan_date"].toString()}};
+	item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+	model->setItem(2, 1, item);
+
+	item = new QStandardItem{QString{"Total"}};
+	item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+	model->setItem(3, 0, item);
+
+	item = new QStandardItem{QString{std::to_string(json_object["total"].toInt()).c_str()}};
+	item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+	model->setItem(3, 1, item);
+
+	ui.headerView->setModel(model);
+	ui.headerView->setColumnWidth(0, 200);
 }
 
 
@@ -93,8 +130,4 @@ void ScanStatisticsDialog::fillTableWithData(const QJsonObject& json_object) {
 	}
 
 	ui.tableView->setModel(model);
-
-	for (int i{}; i < 4; ++i) {
-		ui.tableView->setColumnWidth(i, 200);
-	}
 }
